@@ -1,3 +1,4 @@
-curl -X POST http://127.0.0.1:8000/plan-trip \
-     -H "Content-Type: application/json" \
-     -d '{"destination": "Goa", "days": 3, "budget": 15000}'
+curl -H 'Content-Type: application/x-www-form-urlencoded' \
+     -d 'srch=sumit&deptid=164' \
+     -X POST \
+     https://directory.puchd.ac.in/search.php

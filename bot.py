@@ -4,7 +4,7 @@ from aiogram.filters import Command
 from aiogram.fsm.state import StatesGroup, State
 from aiogram.fsm.context import FSMContext
 import dotenv,os
-
+from itinerary import generate_itinerary
 dotenv.load_dotenv()
 
 BOT_TOKEN = os.getenv("TOKEN")
@@ -56,13 +56,11 @@ async def process_budget(message: types.Message, state: FSMContext):
     async with httpx.AsyncClient() as client:
         resp = await client.post(API_URL, json=data)
         trip = resp.json()
-
-    reply = (
-        f"✅ Trip planned!\n"
-        f"Destination: {trip['destination']}\n"
-        f"Days: {trip['days']}\n"
-        f"Budget: {trip['budget']}\n\n"
-        f"Itinerary:\n- " + "\n- ".join(trip["itinerary"])
-    )
-    await message.answer(reply)
-    await state.clear()
+        reply= await generate_itinerary(
+            destination=trip["destination"],
+            duration=f"{trip['days']} days",
+            budget=f"${trip['budget']}",
+            interests="general sightseeing"
+        )
+        await message.answer(reply)
+        await state.clear()
